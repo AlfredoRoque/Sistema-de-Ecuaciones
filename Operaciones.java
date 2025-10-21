@@ -11,41 +11,39 @@ public class Operaciones {
     int xPositionThree = 2;
     int yPositionTwo = 1;
     int yPositionThree = 2;
+    int zPositionTwo = 1;
+    int zPositionThree = 2;
     int resPositionTwo = 1;
     int resPositionThree = 2;
 
+    /**
+     * Metodo para resolver un sistema de ecuaciones de 2X2
+     */
    public void Sustitucion2x2() {
        SistemaEcuacion sistemaEcuacion = new SistemaEcuacion();
+
+       //Panel para ingresar los valores de las ecuaciones
        JPanel panel = new JPanel(new GridLayout(0, 5, 10, 10));
 
        // Listas para guardar referencias a los campos
        List<JTextField> xFields = new ArrayList<>();
        List<JTextField> yFields = new ArrayList<>();
        List<JTextField> resFields = new ArrayList<>();
-       for (int i = 0; i <= 1; i++) {
-           JTextField xValue = new JTextField();
-           JTextField yValue = new JTextField();
-           JTextField ecuRes = new JTextField();
-           panel.add(xValue);
-           panel.add(new JLabel("X +"));
-           panel.add(yValue);
-           panel.add(new JLabel("Y = "));
-           panel.add(ecuRes);
-           xFields.add(xValue);
-           yFields.add(yValue);
-           resFields.add(ecuRes);
-       }
+
+       //Generar los fields necesarios
+       this.generateFields(panel, xFields,yFields,resFields);
 
        int result = JOptionPane.showConfirmDialog(null, panel,
                "Indica los valores de tus ecuaciones", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
        if (result == JOptionPane.OK_OPTION) {
-
+           //Obtener los valores capturados en los inputs
            for (int i = 0; i < xFields.size(); i++) {
                sistemaEcuacion.getxValue().add(Double.parseDouble(xFields.get(i).getText()));
                sistemaEcuacion.getyValue().add(Double.parseDouble(yFields.get(i).getText()));
                sistemaEcuacion.getEcuResults().add(Double.parseDouble(resFields.get(i).getText()));
            }
+           //Proceso utilizando sustitucion para resolver sistema 2X2
            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getxValue().get(xPositionTwo) * sistemaEcuacion.getEcuResults().getFirst() / sistemaEcuacion.getxValue().getFirst());
            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getxValue().get(xPositionTwo) * -1.0D * sistemaEcuacion.getyValue().getFirst() / sistemaEcuacion.getxValue().getFirst());
            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getxProcess().get(1) + sistemaEcuacion.getyValue().get(yPositionTwo));
@@ -53,6 +51,7 @@ public class Operaciones {
            sistemaEcuacion.getyProcess().add(sistemaEcuacion.getyValue().get(yPositionTwo) * sistemaEcuacion.getyResult());
            sistemaEcuacion.setxResult((sistemaEcuacion.getEcuResults().get(resPositionTwo) + -1.0D * sistemaEcuacion.getyProcess().getFirst()) / sistemaEcuacion.getxValue().get(xPositionTwo));
 
+           //Muestra proceso que se siguio para la solucion
            JOptionPane.showMessageDialog(null,
                    "Tus ecuaciones son :\n" + sistemaEcuacion.getxValue().getFirst() + "x+"
                            + sistemaEcuacion.getyValue().getFirst() + "y = " + sistemaEcuacion.getEcuResults().getFirst() + "\n" + sistemaEcuacion.getxValue().get(xPositionTwo) + "x+"
@@ -74,43 +73,88 @@ public class Operaciones {
        }
    }
 
-   public void Sustitucion3x3(int a) {
-      float x1 = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "dato 1 fila 1", "Capturador", 3));
-      float x2 = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "dato 2 fila 1", "Capturador", 3));
-      float x3 = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "dato 3 fila 1", "Capturador", 3));
-      float y1 = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "dato 1 fila 2", "Capturador", 3));
-      float y2 = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "dato 2 fila 2", "Capturador", 3));
-      float y3 = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "dato 3 fila 2", "Capturador", 3));
-      float z1 = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "dato 1 fila 3", "Capturador", 3));
-      float z2 = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "dato 2 fila 3", "Capturador", 3));
-      float z3 = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "dato 3 fila 3", "Capturador", 3));
-      float xres = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "resultado de ecuacion 1", "Capturador", 3));
-      float yres = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "resultado de ecuacion 2", "Capturador", 3));
-      float zres = (float)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "resultado de ecuacion 3", "Capturador", 3));
-      float x1n = y3 * xres;
-      float x2n = y3 * -1.0F * x1;
-      float x3n = y3 * -1.0F * x2;
-      float x4n = y1 + x2n;
-      float x5n = y2 + x3n;
-      float x6n = yres + -1.0F * x1n;
-      float y1n = z3 * xres;
-      float y2n = z3 * -1.0F * x1;
-      float y3n = z3 * -1.0F * x2;
-      float y4n = z1 + y2n;
-      float y5n = z2 + y3n;
-      float y6n = zres + -1.0F * y1n;
-      float z1n = y4n * x6n / x4n;
-      float z2n = y4n * -1.0F * x5n / x4n;
-      float z3n = z2n + y5n;
-      float y = (y6n + -1.0F * z1n) / z3n;
-      float z4n = y5n * y;
-      float z5n = (y6n + -1.0F * z4n) / y4n;
-      float w1 = x1 * z5n;
-      float w2 = x2 * y;
-      float w3 = xres + -1.0F * w1;
-      float w4 = w3 + -1.0F * w2;
-      float z = w4 / x3;
-      JOptionPane.showMessageDialog((Component)null, "Tus ecuaciones son:\n" + x1 + "x+" + x2 + "y+" + x3 + "z=" + xres + "\n" + y1 + "x+" + y2 + "y+" + y3 + "z=" + yres + "\n" + z1 + "x+" + z2 + "y+" + z3 + "z=" + zres + "\ndespejar 'z' de ecuacion 1\n" + "z=(" + xres + "+" + -1.0F * x1 + "x+" + -1.0F * x2 + "y)/" + x3 + "\nsutituir valor de z en ecuacion 2\n" + "(4)   " + x4n + "x+" + x5n + "y=" + (yres + -1.0F * x1n) + "\nsutituir valor de z en ecuacion 3\n" + "(5)   " + y4n + "x+" + y5n + "y=" + (zres + -1.0F * y1n) + "\ndespejar 'x' de ecuacion 4\n(6)    x=(" + x6n + "+" + -1.0F * x5n + "y)/" + x4n + "\nsustituir valor de x en ecuacion 5\n" + y4n + "(" + x6n + "+" + -1.0F * x5n + "y)/" + x4n + "\nresolver y despejar y\ny=" + (y6n + -1.0F * z1n) + "/" + z3n + "\ny=" + y + "\nsustituir y en ecuacion 6\nx=(" + x6n + "+" + -1.0F * x5n + "(" + y + "))/" + x4n + "\nx=(" + x6n + "+" + -1.0F * x5n * y + ")/" + x4n + "\nx=" + (x6n + -1.0F * x5n * y) + "/" + x4n + "\nx=" + z5n + "\nsustituir valor de x e y en ecuacion 1\n" + x1 + "(" + z5n + ")+" + x2 + "(" + y + ")+" + x3 + "z=" + xres + "\n" + w1 + w2 + "+" + x3 + "z=" + xres + "\nz=(" + xres + "+" + -1.0F * (w1 + w2) + ")/" + x3 + "\nz=" + z + "\nLos resultados de tus ecuaciones son:\n\nx  = " + z5n + "     " + "y = " + y + "     " + "z = " + z, "Resultados", 1);
+    /**
+     * Metodo para resolver un sistema de ecuaciones de 3X3
+     */
+    public void Sustitucion3x3() {
+        SistemaEcuacion sistemaEcuacion = new SistemaEcuacion();
+
+        //Panel para ingresar los valores de las ecuaciones
+        JPanel panel = new JPanel(new GridLayout(0, 7, 10, 10));
+
+        // Listas para guardar referencias a los campos
+        List<JTextField> xFields = new ArrayList<>();
+        List<JTextField> yFields = new ArrayList<>();
+        List<JTextField> zFields = new ArrayList<>();
+        List<JTextField> resFields = new ArrayList<>();
+
+        //Generar los fields necesarios
+        this.generateFields(panel, xFields,yFields,zFields,resFields);
+
+        int result = JOptionPane.showConfirmDialog(null, panel,
+                "Indica los valores de tus ecuaciones", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            //Obtener los valores capturados en los inputs
+            for (int i = 0; i < xFields.size(); i++) {
+                sistemaEcuacion.getxValue().add(Double.parseDouble(xFields.get(i).getText()));
+                sistemaEcuacion.getyValue().add(Double.parseDouble(yFields.get(i).getText()));
+                sistemaEcuacion.getzValue().add(Double.parseDouble(zFields.get(i).getText()));
+                sistemaEcuacion.getEcuResults().add(Double.parseDouble(resFields.get(i).getText()));
+            }
+
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getzValue().get(zPositionTwo) * sistemaEcuacion.getEcuResults().getFirst());
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getzValue().get(zPositionTwo) * -1.0F * sistemaEcuacion.getxValue().getFirst());
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getzValue().get(zPositionTwo) * -1.0F * sistemaEcuacion.getyValue().getFirst());
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getxValue().get(xPositionTwo) + sistemaEcuacion.getxProcess().get(xPositionTwo));
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getyValue().get(yPositionTwo) + sistemaEcuacion.getxProcess().get(xPositionThree));
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getEcuResults().get(yPositionTwo) + -1.0F * sistemaEcuacion.getxProcess().getFirst());
+
+            sistemaEcuacion.getyProcess().add(sistemaEcuacion.getzValue().get(zPositionThree) * sistemaEcuacion.getEcuResults().getFirst());
+            sistemaEcuacion.getyProcess().add(sistemaEcuacion.getzValue().get(zPositionThree) * -1.0F * sistemaEcuacion.getxValue().getFirst());
+            sistemaEcuacion.getyProcess().add(sistemaEcuacion.getzValue().get(zPositionThree) * -1.0F * sistemaEcuacion.getyValue().getFirst());
+            sistemaEcuacion.getyProcess().add(sistemaEcuacion.getxValue().get(zPositionThree) + sistemaEcuacion.getyProcess().get(1));
+            sistemaEcuacion.getyProcess().add(sistemaEcuacion.getyValue().get(yPositionThree) + sistemaEcuacion.getyProcess().get(2));
+            sistemaEcuacion.getyProcess().add(sistemaEcuacion.getEcuResults().get(resPositionThree) + -1.0F * sistemaEcuacion.getyProcess().getFirst());
+
+            sistemaEcuacion.getzProcess().add(sistemaEcuacion.getyProcess().get(3) * sistemaEcuacion.getxProcess().get(5) / sistemaEcuacion.getxProcess().get(3));
+            sistemaEcuacion.getzProcess().add(sistemaEcuacion.getyProcess().get(3) * -1.0F * sistemaEcuacion.getxProcess().get(4) / sistemaEcuacion.getxProcess().get(3));
+            sistemaEcuacion.getzProcess().add(sistemaEcuacion.getzProcess().get(1) + sistemaEcuacion.getyProcess().get(4));
+
+            sistemaEcuacion.setyResult((sistemaEcuacion.getyProcess().get(5) + -1.0F * sistemaEcuacion.getzProcess().getFirst()) / sistemaEcuacion.getzProcess().get(2));
+
+            sistemaEcuacion.getzProcess().add(sistemaEcuacion.getyProcess().get(4) * sistemaEcuacion.getyResult());
+            sistemaEcuacion.getzProcess().add((sistemaEcuacion.getyProcess().get(5) + -1.0F * sistemaEcuacion.getzProcess().get(3)) / sistemaEcuacion.getyProcess().get(3));
+
+            List<Double> findZValue = new ArrayList<>();
+
+            findZValue.add(sistemaEcuacion.getxValue().getFirst() * sistemaEcuacion.getzProcess().get(4));
+            findZValue.add(sistemaEcuacion.getyValue().getFirst() * sistemaEcuacion.getyResult());
+            findZValue.add(sistemaEcuacion.getEcuResults().getFirst() + -1.0F * findZValue.getFirst());
+            findZValue.add(findZValue.get(2) + -1.0F * findZValue.get(1));
+
+            sistemaEcuacion.setzResult(findZValue.get(3) / sistemaEcuacion.getzValue().getFirst());
+
+            JOptionPane.showMessageDialog(null, "Tus ecuaciones son:\n" + sistemaEcuacion.getxValue().getFirst()
+                    + "x+" + sistemaEcuacion.getyValue().getFirst() + "y+" + sistemaEcuacion.getzValue().getFirst() + "z=" + sistemaEcuacion.getEcuResults().getFirst() + "\n"
+                    + sistemaEcuacion.getxValue().get(xPositionTwo) + "x+" + sistemaEcuacion.getyValue().get(yPositionTwo) + "y+"
+                    + sistemaEcuacion.getzValue().get(zPositionTwo) + "z=" + sistemaEcuacion.getEcuResults().get(yPositionTwo) + "\n" + sistemaEcuacion.getxValue().get(zPositionThree)
+                    + "x+" + sistemaEcuacion.getyValue().get(yPositionThree) + "y+" + sistemaEcuacion.getzValue().get(zPositionThree)
+                    + "z=" + sistemaEcuacion.getEcuResults().get(resPositionThree) + "\ndespejar 'z' de ecuacion 1\n" + "z=(" + sistemaEcuacion.getEcuResults().getFirst() + "+"
+                    + -1.0F * sistemaEcuacion.getxValue().getFirst() + "x+" + -1.0F * sistemaEcuacion.getyValue().getFirst()
+                    + "y)/" + sistemaEcuacion.getzValue().getFirst() + "\nsutituir valor de z en ecuacion 2\n" + "(4)   "
+                    + sistemaEcuacion.getxProcess().get(3) + "x+" + sistemaEcuacion.getxProcess().get(4) + "y=" + (sistemaEcuacion.getEcuResults().get(yPositionTwo) + -1.0F * sistemaEcuacion.getxProcess().getFirst()) + "\nsutituir valor de z en ecuacion 3\n" + "(5)   "
+                    + sistemaEcuacion.getyProcess().get(3) + "x+" + sistemaEcuacion.getyProcess().get(4) + "y=" + (sistemaEcuacion.getEcuResults().get(resPositionThree) + -1.0F * sistemaEcuacion.getyProcess().getFirst()) + "\ndespejar 'x' de ecuacion 4\n(6)    x=(" + sistemaEcuacion.getxProcess().get(5)
+                    + "+" + -1.0F * sistemaEcuacion.getxProcess().get(4) + "y)/" + sistemaEcuacion.getxProcess().get(3) + "\nsustituir valor de x en ecuacion 5\n" + sistemaEcuacion.getyProcess().get(3) + "(" + sistemaEcuacion.getxProcess().get(5) + "+"
+                    + -1.0F * sistemaEcuacion.getxProcess().get(4) + "y)/" + sistemaEcuacion.getxProcess().get(3) + "\nresolver y despejar y\ny=" + (sistemaEcuacion.getyProcess().get(5) + -1.0F * sistemaEcuacion.getzProcess().getFirst()) + "/" + sistemaEcuacion.getzProcess().get(2)
+                    + "\ny=" + sistemaEcuacion.getyResult() + "\nsustituir y en ecuacion 6\nx=(" + sistemaEcuacion.getxProcess().get(5) + "+" + -1.0F * sistemaEcuacion.getxProcess().get(4) + "(" + sistemaEcuacion.getyResult() + "))/" + sistemaEcuacion.getxProcess().get(3)
+                    + "\nx=(" + sistemaEcuacion.getxProcess().get(5) + "+" + -1.0F * sistemaEcuacion.getxProcess().get(4) * sistemaEcuacion.getyResult() + ")/" + sistemaEcuacion.getxProcess().get(3) + "\nx=" + (sistemaEcuacion.getxProcess().get(5) + -1.0F * sistemaEcuacion.getxProcess().get(4) * sistemaEcuacion.getyResult()) + "/" + sistemaEcuacion.getxProcess().get(3)
+                    + "\nx=" + sistemaEcuacion.getzProcess().get(4) + "\nsustituir valor de x e y en ecuacion 1\n" + sistemaEcuacion.getxValue().getFirst() + "(" + sistemaEcuacion.getzProcess().get(4) + ")+" + sistemaEcuacion.getyValue().getFirst()
+                    + "(" + sistemaEcuacion.getyResult() + ")+" + sistemaEcuacion.getzValue().getFirst() + "z=" + sistemaEcuacion.getEcuResults().getFirst() + "\n" + findZValue.getFirst() + findZValue.get(1) + "+"
+                    + sistemaEcuacion.getzValue().getFirst() + "z=" + sistemaEcuacion.getEcuResults().getFirst() + "\nz=(" + sistemaEcuacion.getEcuResults().getFirst()
+                    + "+" + -1.0F * (findZValue.getFirst() + findZValue.get(1)) + ")/" + sistemaEcuacion.getzValue().getFirst() + "\nz=" + sistemaEcuacion.getzResult() + "\nLos resultados de tus ecuaciones son:\n\nx  = "
+                    + sistemaEcuacion.getzProcess().get(4) + "     " + "y = " + sistemaEcuacion.getyResult() + "     " + "z = " + sistemaEcuacion.getzResult(), "Resultados", 1);
+        }
    }
 
    public void Sumayresta2x2(int a) {
@@ -342,4 +386,31 @@ public class Operaciones {
       float xd = (xres + -1.0F * (xs + xs2)) / x1;
       JOptionPane.showMessageDialog((Component)null, "Tus ecuaciones son:\n(1)    " + x1 + "x+" + x2 + "y+" + x3 + "z=" + xres + "\n(2)    " + y1 + "x+" + y2 + "y+" + y3 + "z=" + yres + "\n(3)    " + z1 + "x+" + z2 + "y+" + z3 + "z=" + zres + "\ndespejar la misma incognita en las 3 ecuaciones\n" + "(4)     x=(" + xres + "+" + x2cl + "y+" + x3cl + "z)/" + x1 + "\n(5)     x=(" + yres + "+" + y2cl + "y+" + y3cl + "z)/" + y1 + "\n(6)     x=(" + zres + "+" + z2cl + "y+" + z3cl + "z)/" + z1 + "\nigualar ecuacion 4 con 5\n(" + xres + "+" + x2cl + "y+" + x3cl + "z)/" + x1 + "=(" + yres + "+" + y2cl + "y+" + y3cl + "z)/" + y1 + "\nresolver por producto cruzado\n(7)     " + suy + "y+" + suz + "z=" + sres + "\nigualar ecuacion 4 con 6\n(" + xres + "+" + x2cl + "y+" + x3cl + "z)/" + x1 + "=(" + zres + "+" + z2cl + "y+" + z3cl + "z)/" + z1 + "\nresolver por producto cruzado\n(8)     " + sy + "y+" + sz + "z=" + sr2 + "\ndespejar la misma incognita en ecuacion 7 y 8\n (9)     y=(" + sres + "+" + suzc + "z)/" + suy + "     (10)   y=(" + sr2 + "+" + szc + "z)/" + sy + "\nigualr ecuaciones 9 y 10\n" + "(" + sres + "+" + suzc + "z)/" + suy + "=(" + sr2 + "+" + szc + "z)/" + sy + "\nresolver por producto cruzado\n" + lit2 + "z+" + -1.0F * ldt2 + "z=" + ldt + "+" + -1.0F * lit + "\n" + sumz + "z=" + sumr + "\nz=" + sumr + "/" + sumz + "  =" + z + "\nsustituir 'z' en ecuacion 8 para sacar 'y'\n" + sy + "y+" + sz + "(" + z + ")=" + sr2 + "\ny=(" + sr2 + "+" + ys + ")/" + sy + "     y=" + y + "\nsustituir 'z' e 'y' en ecuacion 1 para sacar 'x'\n" + x1 + "x+" + x2 + "(" + y + ")+" + x3 + "(" + z + ")=" + xres + "\n" + x1 + "x=" + xres + "+" + -1.0F * (xs + xs2) + "\nx=" + (xres + -1.0F * (xs + xs2)) + "/" + x1 + "  =" + xd + "\n            Los resultados de tus ecuaciones son:\n\nx  = " + xd + "     " + "y = " + y + "     " + "z = " + z, "Resultados", 1);
    }
+
+    @SafeVarargs
+    private void generateFields(JPanel panel, List<JTextField>... fieldsSize) {
+        for (int i = 1; i <= fieldsSize.length-1; i++) {
+            JTextField xValue = new JTextField();
+            JTextField yValue = new JTextField();
+            JTextField zValue = new JTextField();
+            JTextField ecuRes = new JTextField();
+            panel.add(xValue);
+            panel.add(new JLabel("X +"));
+            fieldsSize[0].add(xValue);
+            fieldsSize[1].add(yValue);
+            if(fieldsSize.length <= 3) {
+                panel.add(yValue);
+                panel.add(new JLabel("Y = "));
+                fieldsSize[2].add(ecuRes);
+            }else{
+                panel.add(yValue);
+                panel.add(new JLabel("Y + "));
+                panel.add(zValue);
+                panel.add(new JLabel("Z = "));
+                fieldsSize[2].add(zValue);
+                fieldsSize[3].add(ecuRes);
+            }
+            panel.add(ecuRes);
+        }
+    }
 }

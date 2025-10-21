@@ -258,8 +258,7 @@ public class Interfaz extends JFrame {
 
    private void susti3ActionPerformed(ActionEvent evt) {
       Operaciones a = new Operaciones();
-      int x = 0;
-      a.Sustitucion3x3(x);
+      a.Sustitucion3x3();
    }
 
    private void sus2botActionPerformed(ActionEvent evt) {
@@ -269,8 +268,7 @@ public class Interfaz extends JFrame {
 
    private void sust3botActionPerformed(ActionEvent evt) {
       Operaciones a = new Operaciones();
-      int x = 0;
-      a.Sustitucion3x3(x);
+      a.Sustitucion3x3();
    }
 
    private void jButton1ActionPerformed(ActionEvent evt) {
