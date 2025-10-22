@@ -1,6 +1,8 @@
 package ecuaciones;
 
 import java.awt.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import javax.swing.*;
 import java.util.List;
@@ -37,12 +39,8 @@ public class Operaciones {
                "Indica los valores de tus ecuaciones", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
        if (result == JOptionPane.OK_OPTION) {
-           //Obtener los valores capturados en los inputs
-           for (int i = 0; i < xFields.size(); i++) {
-               sistemaEcuacion.getxValue().add(Double.parseDouble(xFields.get(i).getText()));
-               sistemaEcuacion.getyValue().add(Double.parseDouble(yFields.get(i).getText()));
-               sistemaEcuacion.getEcuResults().add(Double.parseDouble(resFields.get(i).getText()));
-           }
+           this.getFieldsValues(sistemaEcuacion, xFields,yFields,resFields);
+
            //Proceso utilizando sustitucion para resolver sistema 2X2
            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getxValue().get(xPositionTwo) * sistemaEcuacion.getEcuResults().getFirst() / sistemaEcuacion.getxValue().getFirst());
            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getxValue().get(xPositionTwo) * -1.0D * sistemaEcuacion.getyValue().getFirst() / sistemaEcuacion.getxValue().getFirst());
@@ -52,24 +50,23 @@ public class Operaciones {
            sistemaEcuacion.setxResult((sistemaEcuacion.getEcuResults().get(resPositionTwo) + -1.0D * sistemaEcuacion.getyProcess().getFirst()) / sistemaEcuacion.getxValue().get(xPositionTwo));
 
            //Muestra proceso que se siguio para la solucion
-           JOptionPane.showMessageDialog(null,
-                   "Tus ecuaciones son :\n" + sistemaEcuacion.getxValue().getFirst() + "x+"
-                           + sistemaEcuacion.getyValue().getFirst() + "y = " + sistemaEcuacion.getEcuResults().getFirst() + "\n" + sistemaEcuacion.getxValue().get(xPositionTwo) + "x+"
-                           + sistemaEcuacion.getyValue().get(yPositionTwo) + "y = " + sistemaEcuacion.getEcuResults().get(resPositionTwo) + "             \n" + "\ndespejar 'x' en ecuacion 1\n x="
-                           + sistemaEcuacion.getEcuResults().getFirst() + "+" + sistemaEcuacion.getyValue().getFirst() * -1.0D + "x /" + sistemaEcuacion.getxValue().getFirst() + "\n"
-                           + "\nsustituir 'x' en ecuacion 2 \n " + sistemaEcuacion.getxValue().get(xPositionTwo) + "(" + sistemaEcuacion.getEcuResults().getFirst() + "+"
-                           + sistemaEcuacion.getyValue().getFirst() * -1.0D + "y /" + sistemaEcuacion.getxValue().getFirst() + ")+" + sistemaEcuacion.getyValue().get(yPositionTwo)
-                           + "y" + "=" + sistemaEcuacion.getEcuResults().getFirst() + "\n\nresolver multiplicacion \n "
-                           + sistemaEcuacion.getEcuResults().getFirst() + "+" + sistemaEcuacion.getxProcess().get(1) + "y+" + sistemaEcuacion.getyValue().get(yPositionTwo)
-                           + "y=" + sistemaEcuacion.getEcuResults().get(resPositionTwo) + "\n " + sistemaEcuacion.getxProcess().get(2) + "y=" + sistemaEcuacion.getEcuResults().get(resPositionTwo) + "+" + sistemaEcuacion.getEcuResults().getFirst() * -1.0D
-                           + "\n\ndespejar 'y' \n y=" + sistemaEcuacion.getEcuResults().get(resPositionTwo) + "+" + sistemaEcuacion.getEcuResults().getFirst() * -1.0D + "/" + sistemaEcuacion.getxProcess().get(2) + "\n\ny="
-                           + sistemaEcuacion.getyResult() + "\n\nsustituir valor de 'y' en ecuacion 2\n " + sistemaEcuacion.getxValue().get(xPositionTwo) + "x+"
-                           + sistemaEcuacion.getyValue().get(yPositionTwo) + "(" + sistemaEcuacion.getyResult() + ")=" + sistemaEcuacion.getEcuResults().get(resPositionTwo)
-                           + "\n\ndespejar 'x'\n" + sistemaEcuacion.getxValue().get(xPositionTwo) + "x=" + sistemaEcuacion.getEcuResults().get(resPositionTwo) + "+"
-                           + sistemaEcuacion.getyProcess().getFirst() * -1.0D + "\nx=" + (sistemaEcuacion.getEcuResults().get(resPositionTwo) + -1.0D * sistemaEcuacion.getyProcess().getFirst())
-                           + "/" + sistemaEcuacion.getxValue().get(xPositionTwo) + "\nx=" + sistemaEcuacion.getxResult()
-                           + "\n\n              Los resultados de tus ecuaciones son:                                                          \n"
-                           + "                  x =" + sistemaEcuacion.getxResult() + "  " + "y = " + sistemaEcuacion.getyResult() + "\n\n\n", "Resultados", 1);
+           this.showProcessMessage("Tus ecuaciones son :\n" + roundTwoDecimals(sistemaEcuacion.getxValue().getFirst()) + "x+"
+                   + roundTwoDecimals(sistemaEcuacion.getyValue().getFirst()) + "y = " + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) + "\n" + roundTwoDecimals(sistemaEcuacion.getxValue().get(xPositionTwo)) + "x+"
+                   + roundTwoDecimals(sistemaEcuacion.getyValue().get(yPositionTwo)) + "y = " + roundTwoDecimals(sistemaEcuacion.getEcuResults().get(resPositionTwo)) + "             \n" + "\ndespejar 'x' en ecuacion 1\n x="
+                   + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) + "+" + roundTwoDecimals(sistemaEcuacion.getyValue().getFirst()) * -1.0D + "x /" + roundTwoDecimals(sistemaEcuacion.getxValue().getFirst()) + "\n"
+                   + "\nsustituir 'x' en ecuacion 2 \n " + roundTwoDecimals(sistemaEcuacion.getxValue().get(xPositionTwo)) + "(" + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) + "+"
+                   + roundTwoDecimals(sistemaEcuacion.getyValue().getFirst()) * -1.0D + "y /" + roundTwoDecimals(sistemaEcuacion.getxValue().getFirst()) + ")+" + roundTwoDecimals(sistemaEcuacion.getyValue().get(yPositionTwo))
+                   + "y" + "=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) + "\n\nresolver multiplicacion \n "
+                   + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) + "+" + roundTwoDecimals(sistemaEcuacion.getxProcess().get(1)) + "y+" + roundTwoDecimals(sistemaEcuacion.getyValue().get(yPositionTwo))
+                   + "y=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().get(resPositionTwo)) + "\n " + roundTwoDecimals(sistemaEcuacion.getxProcess().get(2)) + "y=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().get(resPositionTwo)) + "+" + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) * -1.0D
+                   + "\n\ndespejar 'y' \n y=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().get(resPositionTwo)) + "+" + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) * -1.0D + "/" + roundTwoDecimals(sistemaEcuacion.getxProcess().get(2)) + "\n\ny="
+                   + roundTwoDecimals(sistemaEcuacion.getyResult()) + "\n\nsustituir valor de 'y' en ecuacion 2\n " + roundTwoDecimals(sistemaEcuacion.getxValue().get(xPositionTwo)) + "x+"
+                   + roundTwoDecimals(sistemaEcuacion.getyValue().get(yPositionTwo)) + "(" + roundTwoDecimals(sistemaEcuacion.getyResult()) + ")=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().get(resPositionTwo))
+                   + "\n\ndespejar 'x'\n" + roundTwoDecimals(sistemaEcuacion.getxValue().get(xPositionTwo)) + "x=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().get(resPositionTwo)) + "+"
+                   + roundTwoDecimals(sistemaEcuacion.getyProcess().getFirst()) * -1.0D + "\nx=" + roundTwoDecimals((sistemaEcuacion.getEcuResults().get(resPositionTwo) + -1.0D * sistemaEcuacion.getyProcess().getFirst()))
+                   + "/" + roundTwoDecimals(sistemaEcuacion.getxValue().get(xPositionTwo)) + "\nx=" + roundTwoDecimals(sistemaEcuacion.getxResult())
+                   + "\n\n              Los resultados de tus ecuaciones son:                                                          \n"
+                   + "                  x =" + roundTwoDecimals(sistemaEcuacion.getxResult()) + "  " + "y = " + roundTwoDecimals(sistemaEcuacion.getyResult()) + "\n\n\n");
        }
    }
 
@@ -95,14 +92,10 @@ public class Operaciones {
                 "Indica los valores de tus ecuaciones", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
-            //Obtener los valores capturados en los inputs
-            for (int i = 0; i < xFields.size(); i++) {
-                sistemaEcuacion.getxValue().add(Double.parseDouble(xFields.get(i).getText()));
-                sistemaEcuacion.getyValue().add(Double.parseDouble(yFields.get(i).getText()));
-                sistemaEcuacion.getzValue().add(Double.parseDouble(zFields.get(i).getText()));
-                sistemaEcuacion.getEcuResults().add(Double.parseDouble(resFields.get(i).getText()));
-            }
 
+            this.getFieldsValues(sistemaEcuacion, xFields,yFields,zFields,resFields);
+
+            //Proceso utilizando sustitucion para resolver sistema 3X3
             sistemaEcuacion.getxProcess().add(sistemaEcuacion.getzValue().get(zPositionTwo) * sistemaEcuacion.getEcuResults().getFirst());
             sistemaEcuacion.getxProcess().add(sistemaEcuacion.getzValue().get(zPositionTwo) * -1.0F * sistemaEcuacion.getxValue().getFirst());
             sistemaEcuacion.getxProcess().add(sistemaEcuacion.getzValue().get(zPositionTwo) * -1.0F * sistemaEcuacion.getyValue().getFirst());
@@ -127,7 +120,6 @@ public class Operaciones {
             sistemaEcuacion.getzProcess().add((sistemaEcuacion.getyProcess().get(5) + -1.0F * sistemaEcuacion.getzProcess().get(3)) / sistemaEcuacion.getyProcess().get(3));
 
             List<Double> findZValue = new ArrayList<>();
-
             findZValue.add(sistemaEcuacion.getxValue().getFirst() * sistemaEcuacion.getzProcess().get(4));
             findZValue.add(sistemaEcuacion.getyValue().getFirst() * sistemaEcuacion.getyResult());
             findZValue.add(sistemaEcuacion.getEcuResults().getFirst() + -1.0F * findZValue.getFirst());
@@ -135,49 +127,98 @@ public class Operaciones {
 
             sistemaEcuacion.setzResult(findZValue.get(3) / sistemaEcuacion.getzValue().getFirst());
 
-            JOptionPane.showMessageDialog(null, "Tus ecuaciones son:\n" + sistemaEcuacion.getxValue().getFirst()
-                    + "x+" + sistemaEcuacion.getyValue().getFirst() + "y+" + sistemaEcuacion.getzValue().getFirst() + "z=" + sistemaEcuacion.getEcuResults().getFirst() + "\n"
-                    + sistemaEcuacion.getxValue().get(xPositionTwo) + "x+" + sistemaEcuacion.getyValue().get(yPositionTwo) + "y+"
-                    + sistemaEcuacion.getzValue().get(zPositionTwo) + "z=" + sistemaEcuacion.getEcuResults().get(yPositionTwo) + "\n" + sistemaEcuacion.getxValue().get(zPositionThree)
-                    + "x+" + sistemaEcuacion.getyValue().get(yPositionThree) + "y+" + sistemaEcuacion.getzValue().get(zPositionThree)
-                    + "z=" + sistemaEcuacion.getEcuResults().get(resPositionThree) + "\ndespejar 'z' de ecuacion 1\n" + "z=(" + sistemaEcuacion.getEcuResults().getFirst() + "+"
-                    + -1.0F * sistemaEcuacion.getxValue().getFirst() + "x+" + -1.0F * sistemaEcuacion.getyValue().getFirst()
-                    + "y)/" + sistemaEcuacion.getzValue().getFirst() + "\nsutituir valor de z en ecuacion 2\n" + "(4)   "
-                    + sistemaEcuacion.getxProcess().get(3) + "x+" + sistemaEcuacion.getxProcess().get(4) + "y=" + (sistemaEcuacion.getEcuResults().get(yPositionTwo) + -1.0F * sistemaEcuacion.getxProcess().getFirst()) + "\nsutituir valor de z en ecuacion 3\n" + "(5)   "
-                    + sistemaEcuacion.getyProcess().get(3) + "x+" + sistemaEcuacion.getyProcess().get(4) + "y=" + (sistemaEcuacion.getEcuResults().get(resPositionThree) + -1.0F * sistemaEcuacion.getyProcess().getFirst()) + "\ndespejar 'x' de ecuacion 4\n(6)    x=(" + sistemaEcuacion.getxProcess().get(5)
-                    + "+" + -1.0F * sistemaEcuacion.getxProcess().get(4) + "y)/" + sistemaEcuacion.getxProcess().get(3) + "\nsustituir valor de x en ecuacion 5\n" + sistemaEcuacion.getyProcess().get(3) + "(" + sistemaEcuacion.getxProcess().get(5) + "+"
-                    + -1.0F * sistemaEcuacion.getxProcess().get(4) + "y)/" + sistemaEcuacion.getxProcess().get(3) + "\nresolver y despejar y\ny=" + (sistemaEcuacion.getyProcess().get(5) + -1.0F * sistemaEcuacion.getzProcess().getFirst()) + "/" + sistemaEcuacion.getzProcess().get(2)
-                    + "\ny=" + sistemaEcuacion.getyResult() + "\nsustituir y en ecuacion 6\nx=(" + sistemaEcuacion.getxProcess().get(5) + "+" + -1.0F * sistemaEcuacion.getxProcess().get(4) + "(" + sistemaEcuacion.getyResult() + "))/" + sistemaEcuacion.getxProcess().get(3)
-                    + "\nx=(" + sistemaEcuacion.getxProcess().get(5) + "+" + -1.0F * sistemaEcuacion.getxProcess().get(4) * sistemaEcuacion.getyResult() + ")/" + sistemaEcuacion.getxProcess().get(3) + "\nx=" + (sistemaEcuacion.getxProcess().get(5) + -1.0F * sistemaEcuacion.getxProcess().get(4) * sistemaEcuacion.getyResult()) + "/" + sistemaEcuacion.getxProcess().get(3)
-                    + "\nx=" + sistemaEcuacion.getzProcess().get(4) + "\nsustituir valor de x e y en ecuacion 1\n" + sistemaEcuacion.getxValue().getFirst() + "(" + sistemaEcuacion.getzProcess().get(4) + ")+" + sistemaEcuacion.getyValue().getFirst()
-                    + "(" + sistemaEcuacion.getyResult() + ")+" + sistemaEcuacion.getzValue().getFirst() + "z=" + sistemaEcuacion.getEcuResults().getFirst() + "\n" + findZValue.getFirst() + findZValue.get(1) + "+"
-                    + sistemaEcuacion.getzValue().getFirst() + "z=" + sistemaEcuacion.getEcuResults().getFirst() + "\nz=(" + sistemaEcuacion.getEcuResults().getFirst()
-                    + "+" + -1.0F * (findZValue.getFirst() + findZValue.get(1)) + ")/" + sistemaEcuacion.getzValue().getFirst() + "\nz=" + sistemaEcuacion.getzResult() + "\nLos resultados de tus ecuaciones son:\n\nx  = "
-                    + sistemaEcuacion.getzProcess().get(4) + "     " + "y = " + sistemaEcuacion.getyResult() + "     " + "z = " + sistemaEcuacion.getzResult(), "Resultados", 1);
+            //Mensaje con el proceso de la solucion
+            this.showProcessMessage("Tus ecuaciones son:\n" + roundTwoDecimals(sistemaEcuacion.getxValue().getFirst())
+                    + "x+" + roundTwoDecimals(sistemaEcuacion.getyValue().getFirst()) + "y+" + roundTwoDecimals(sistemaEcuacion.getzValue().getFirst())
+                    + "z=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) + "\n"
+                    + roundTwoDecimals(sistemaEcuacion.getxValue().get(xPositionTwo)) + "x+" + roundTwoDecimals(sistemaEcuacion.getyValue().get(yPositionTwo)) + "y+"
+                    + roundTwoDecimals(sistemaEcuacion.getzValue().get(zPositionTwo)) + "z=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().get(yPositionTwo))
+                    + "\n" + roundTwoDecimals(sistemaEcuacion.getxValue().get(zPositionThree)) + "x+"
+                    + roundTwoDecimals(sistemaEcuacion.getyValue().get(yPositionThree)) + "y+" + roundTwoDecimals(sistemaEcuacion.getzValue().get(zPositionThree))
+                    + "z=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().get(resPositionThree)) + "\ndespejar 'z' de ecuacion 1\n"
+                    + "z=(" + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) + "+"
+                    + -1.0F * roundTwoDecimals(sistemaEcuacion.getxValue().getFirst()) + "x+"
+                    + -1.0F * roundTwoDecimals(sistemaEcuacion.getyValue().getFirst())
+                    + "y)/" + roundTwoDecimals(sistemaEcuacion.getzValue().getFirst()) + "\nsutituir valor de z en ecuacion 2\n" + "(4)   "
+                    + roundTwoDecimals(sistemaEcuacion.getxProcess().get(3)) + "x+" + roundTwoDecimals(sistemaEcuacion.getxProcess().get(4))
+                    + "y=" + roundTwoDecimals((sistemaEcuacion.getEcuResults().get(yPositionTwo) + -1.0F * sistemaEcuacion.getxProcess().getFirst())) + "\nsutituir valor de z en ecuacion 3\n" + "(5)   "
+                    + roundTwoDecimals(sistemaEcuacion.getyProcess().get(3)) + "x+" + roundTwoDecimals(sistemaEcuacion.getyProcess().get(4))
+                    + "y=" + roundTwoDecimals((sistemaEcuacion.getEcuResults().get(resPositionThree) + -1.0F * sistemaEcuacion.getyProcess().getFirst())) + "\ndespejar 'x' de ecuacion 4\n(6)    x=("
+                    + roundTwoDecimals(sistemaEcuacion.getxProcess().get(5)) + "+" + -1.0F * roundTwoDecimals(sistemaEcuacion.getxProcess().get(4)) + "y)/"
+                    + roundTwoDecimals(sistemaEcuacion.getxProcess().get(3)) + "\nsustituir valor de x en ecuacion 5\n"
+                    + roundTwoDecimals(sistemaEcuacion.getyProcess().get(3)) + "(" + roundTwoDecimals(sistemaEcuacion.getxProcess().get(5)) + "+"
+                    + -1.0F * roundTwoDecimals(sistemaEcuacion.getxProcess().get(4)) + "y)/" + roundTwoDecimals(sistemaEcuacion.getxProcess().get(3)) + "\nresolver y despejar y\ny="
+                    + roundTwoDecimals((sistemaEcuacion.getyProcess().get(5) + -1.0F * sistemaEcuacion.getzProcess().getFirst()))
+                    + "/" + roundTwoDecimals(sistemaEcuacion.getzProcess().get(2)) + "\ny=" + roundTwoDecimals(sistemaEcuacion.getyResult()) + "\nsustituir y en ecuacion 6\nx=("
+                    + roundTwoDecimals(sistemaEcuacion.getxProcess().get(5)) + "+" + -1.0F * roundTwoDecimals(sistemaEcuacion.getxProcess().get(4))
+                    + "(" + roundTwoDecimals(sistemaEcuacion.getyResult()) + "))/" + roundTwoDecimals(sistemaEcuacion.getxProcess().get(3))
+                    + "\nx=(" + roundTwoDecimals(sistemaEcuacion.getxProcess().get(5)) + "+" + -1.0F * roundTwoDecimals(sistemaEcuacion.getxProcess().get(4) * sistemaEcuacion.getyResult())
+                    + ")/" + roundTwoDecimals(sistemaEcuacion.getxProcess().get(3)) + "\nx="
+                    + roundTwoDecimals((sistemaEcuacion.getxProcess().get(5) + -1.0F * sistemaEcuacion.getxProcess().get(4) * sistemaEcuacion.getyResult()))
+                    + "/" + roundTwoDecimals(sistemaEcuacion.getxProcess().get(3)) + "\nx=" + roundTwoDecimals(sistemaEcuacion.getzProcess().get(4))
+                    + "\nsustituir valor de x e y en ecuacion 1\n" + roundTwoDecimals(sistemaEcuacion.getxValue().getFirst())
+                    + "(" + roundTwoDecimals(sistemaEcuacion.getzProcess().get(4)) + ")+" + roundTwoDecimals(sistemaEcuacion.getyValue().getFirst())
+                    + "(" + roundTwoDecimals(sistemaEcuacion.getyResult()) + ")+" + roundTwoDecimals(sistemaEcuacion.getzValue().getFirst())
+                    + "z=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) + "\n" + roundTwoDecimals(findZValue.getFirst() + findZValue.get(1)) + "+"
+                    + roundTwoDecimals(sistemaEcuacion.getzValue().getFirst()) + "z=" + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst())
+                    + "\nz=(" + roundTwoDecimals(sistemaEcuacion.getEcuResults().getFirst()) + "+" + -1.0F * roundTwoDecimals((findZValue.getFirst() + findZValue.get(1)))
+                    + ")/" + roundTwoDecimals(sistemaEcuacion.getzValue().getFirst()) + "\nz=" + roundTwoDecimals(sistemaEcuacion.getzResult()) + "\nLos resultados de tus ecuaciones son:\n\nx  = "
+                    + roundTwoDecimals(sistemaEcuacion.getzProcess().get(4)) + "     " + "y = " + roundTwoDecimals(sistemaEcuacion.getyResult())
+                    + "     " + "z = " + roundTwoDecimals(sistemaEcuacion.getzResult()));
         }
    }
 
-   public void Sumayresta2x2(int a) {
-      double x1 = (double)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "primer dato fila 1", "Capturador", 3));
-      double x2 = (double)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "segundo dato fila 1", "Capturador", 3));
-      double y1 = (double)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "primer dato fila 2", "Capturador", 3));
-      double y2 = (double)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "segundo dato fila 2", "Capturador", 3));
-      double xres = (double)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "resultado de ecuacion 1", "Capturador", 3));
-      double yres = (double)Integer.parseInt(JOptionPane.showInputDialog((Component)null, "resultado de ecuacion 2", "Capturador", 3));
-      double y1n = -x2 * y1;
-      double y2n = -x2 * y2;
-      double yresn = -x2 * yres;
-      double x1n = y2 * x1;
-      double x2n = y2 * x2;
-      double xresn = y2 * xres;
-      double z1 = x1n + y1n;
-      double z2 = x2n + y2n;
-      double z3 = xresn + yresn;
-      double z1n = z3 / z1;
-      double x3n = x1 * z1n;
-      double x4n = xres + -1.0D * x3n;
-      double y = x4n / x2;
-      JOptionPane.showMessageDialog((Component)null, "Tus ecuaciones son :\n" + x1 + "x+" + x2 + "y = " + xres + "\n" + y1 + "x+" + y2 + "y = " + yres + "             \n" + "\neliminar 'y' multiplicando\n" + x1n + "x+" + x2n + "y=" + xresn + "\n" + y1n + "x+" + y2n + "y=" + yresn + "\n\nSumar valores nuevos\n" + z1 + "x+" + z2 + "y=" + z3 + "\n" + z1 + "x=" + z3 + "\nx=" + z3 + "/" + z1 + "\nx=" + z1n + "\n\nsustituir 'x' en alguna ecuacion\n" + x1 + "(" + z1n + ")+" + x2 + "y=" + xres + "\n" + x2 + "y=" + xres + "+" + -1.0D * x3n + "\ny=" + x1 + "/" + x2 + "\ny=" + y + "\n\nLos resultados de tus ecuaciones son:                             \n\n" + "                 x =" + z1n + "     " + "y = " + y + "\n\n", "Resultados", 1);
+
+    public void SumayrestaReduccion2x2() {
+
+        SistemaEcuacion sistemaEcuacion = new SistemaEcuacion();
+
+        //Panel para ingresar los valores de las ecuaciones
+        JPanel panel = new JPanel(new GridLayout(0, 5, 10, 10));
+
+        // Listas para guardar referencias a los campos
+        List<JTextField> xFields = new ArrayList<>();
+        List<JTextField> yFields = new ArrayList<>();
+        List<JTextField> resFields = new ArrayList<>();
+
+        //Generar los fields necesarios
+        this.generateFields(panel, xFields,yFields,resFields);
+
+        int result = JOptionPane.showConfirmDialog(null, panel,
+                "Indica los valores de tus ecuaciones", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            this.getFieldsValues(sistemaEcuacion, xFields, yFields, resFields);
+
+            sistemaEcuacion.getyProcess().add(-sistemaEcuacion.getyValue().getFirst() * sistemaEcuacion.getxValue().get(xPositionTwo));
+            sistemaEcuacion.getyProcess().add(-sistemaEcuacion.getyValue().getFirst() * sistemaEcuacion.getyValue().get(yPositionTwo));
+            sistemaEcuacion.getyProcess().add(-sistemaEcuacion.getyValue().getFirst() * sistemaEcuacion.getEcuResults().get(resPositionTwo));
+
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getyValue().get(yPositionTwo) * sistemaEcuacion.getxValue().getFirst());
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getyValue().get(yPositionTwo) * sistemaEcuacion.getyValue().getFirst());
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getyValue().get(yPositionTwo) * sistemaEcuacion.getEcuResults().getFirst());
+
+            sistemaEcuacion.getzProcess().add(sistemaEcuacion.getxProcess().getFirst() + sistemaEcuacion.getyProcess().getFirst());
+            sistemaEcuacion.getzProcess().add(sistemaEcuacion.getxProcess().get(1) + sistemaEcuacion.getyProcess().get(1));
+            sistemaEcuacion.getzProcess().add(sistemaEcuacion.getxProcess().get(2) + sistemaEcuacion.getyProcess().get(2));
+            sistemaEcuacion.getzProcess().add(sistemaEcuacion.getzProcess().get(2) / sistemaEcuacion.getzProcess().getFirst());
+
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getxValue().getFirst() * sistemaEcuacion.getzProcess().get(3));
+            sistemaEcuacion.getxProcess().add(sistemaEcuacion.getEcuResults().getFirst() + -1.0D * sistemaEcuacion.getxProcess().get(3));
+
+            sistemaEcuacion.setyResult(sistemaEcuacion.getxProcess().get(4) / sistemaEcuacion.getyValue().getFirst());
+
+            this.showProcessMessage("Tus ecuaciones son :\n" + sistemaEcuacion.getxValue().getFirst() + "x+" + sistemaEcuacion.getyValue().getFirst() + "y = " + sistemaEcuacion.getEcuResults().getFirst() + "\n" + sistemaEcuacion.getxValue().get(xPositionTwo) + "x+"
+                    + sistemaEcuacion.getyValue().get(yPositionTwo) + "y = " + sistemaEcuacion.getEcuResults().get(resPositionTwo) + "             \n"
+                    + "\neliminar 'y' multiplicando\n" + sistemaEcuacion.getxProcess().getFirst() + "x+" + sistemaEcuacion.getxProcess().get(1) + "y=" + sistemaEcuacion.getxProcess().get(2)
+                    + "\n" + sistemaEcuacion.getyProcess().getFirst() + "x+" + sistemaEcuacion.getyProcess().get(1)
+                    + "y=" + sistemaEcuacion.getyProcess().get(2) + "\n\nSumar valores nuevos\n" + sistemaEcuacion.getzProcess().getFirst() + "x+" + sistemaEcuacion.getzProcess().get(1) + "y=" + sistemaEcuacion.getzProcess().get(2) + "\n"
+                    + sistemaEcuacion.getzProcess().getFirst() + "x=" + sistemaEcuacion.getzProcess().get(2) + "\nx=" + sistemaEcuacion.getzProcess().get(2) + "/" + sistemaEcuacion.getzProcess().getFirst() + "\nx=" + sistemaEcuacion.getzProcess().get(3) + "\n\nsustituir 'x' en alguna ecuacion\n" + sistemaEcuacion.getxValue().getFirst()
+                    + "(" + sistemaEcuacion.getzProcess().get(3) + ")+" + sistemaEcuacion.getyValue().getFirst() + "y=" + sistemaEcuacion.getEcuResults().getFirst() + "\n" + sistemaEcuacion.getyValue().getFirst() + "y="
+                    + sistemaEcuacion.getEcuResults().getFirst() + "+" + -1.0D * sistemaEcuacion.getxProcess().get(3) + "\ny=" + sistemaEcuacion.getxValue().getFirst() + "/"
+                    + sistemaEcuacion.getyValue().getFirst() + "\ny=" + sistemaEcuacion.getyResult() + "\n\nLos resultados de tus ecuaciones son:                             \n\n"
+                    + "                 x =" + sistemaEcuacion.getzProcess().get(3) + "     " + "y = " + sistemaEcuacion.getyResult() + "\n\n");
+        }
    }
 
    public void Sumayresta3x3(int a) {
@@ -412,5 +453,30 @@ public class Operaciones {
             }
             panel.add(ecuRes);
         }
+    }
+
+    @SafeVarargs
+    private void getFieldsValues(SistemaEcuacion sistemaEcuacion, List<JTextField>... fieldsSize) {
+        //Obtener los valores capturados en los inputs
+        for (int i = 0; i < fieldsSize[0].size(); i++) {
+            sistemaEcuacion.getxValue().add(Double.parseDouble(fieldsSize[0].get(i).getText()));
+            sistemaEcuacion.getyValue().add(Double.parseDouble(fieldsSize[1].get(i).getText()));
+            if(fieldsSize.length <= 3){
+                sistemaEcuacion.getEcuResults().add(Double.parseDouble(fieldsSize[2].get(i).getText()));
+            }else {
+                sistemaEcuacion.getzValue().add(Double.parseDouble(fieldsSize[2].get(i).getText()));
+                sistemaEcuacion.getEcuResults().add(Double.parseDouble(fieldsSize[3].get(i).getText()));
+            }
+        }
+    }
+
+    private double roundTwoDecimals(double number){
+        BigDecimal bd = new BigDecimal(number);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
+    private void showProcessMessage(String messageProcess) {
+        JOptionPane.showMessageDialog(null,messageProcess,"Resultados", 1);
     }
 }

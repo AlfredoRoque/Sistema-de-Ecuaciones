@@ -1,11 +1,8 @@
 package ecuaciones;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,11 +11,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 public class Interfaz extends JFrame {
    private JMenu comandos2;
@@ -283,8 +277,7 @@ public class Interfaz extends JFrame {
 
    private void suma2botActionPerformed(ActionEvent evt) {
       Operaciones a = new Operaciones();
-      int x = 0;
-      a.Sumayresta2x2(x);
+      a.SumayrestaReduccion2x2();
    }
 
    private void igua2botActionPerformed(ActionEvent evt) {
@@ -313,8 +306,7 @@ public class Interfaz extends JFrame {
 
    private void suma2ActionPerformed(ActionEvent evt) {
       Operaciones a = new Operaciones();
-      int x = 0;
-      a.Sumayresta2x2(x);
+      a.SumayrestaReduccion2x2();
    }
 
    private void det2ActionPerformed(ActionEvent evt) {
