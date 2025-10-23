@@ -20,16 +20,8 @@ public class SistemaEcuacion {
         return zValue;
     }
 
-    public void setzValue(List<Double> zValue) {
-        this.zValue = zValue;
-    }
-
     public List<Double> getzProcess() {
         return zProcess;
-    }
-
-    public void setzProcess(List<Double> zProcess) {
-        this.zProcess = zProcess;
     }
 
     public double getzResult() {
@@ -44,16 +36,8 @@ public class SistemaEcuacion {
         return xProcess;
     }
 
-    public void setxProcess(List<Double> xProcess) {
-        this.xProcess = xProcess;
-    }
-
     public List<Double> getyProcess() {
         return yProcess;
-    }
-
-    public void setyProcess(List<Double> yProcess) {
-        this.yProcess = yProcess;
     }
 
     public double getxResult() {
@@ -76,23 +60,11 @@ public class SistemaEcuacion {
         return ecuResults;
     }
 
-    public void setEcuResults(List<Double> ecuResults) {
-        this.ecuResults = ecuResults;
-    }
-
     public List<Double> getxValue() {
         return xValue;
     }
 
-    public void setxValue(List<Double> xValue) {
-        this.xValue = xValue;
-    }
-
     public List<Double> getyValue() {
         return yValue;
-    }
-
-    public void setyValue(List<Double> yValue) {
-        this.yValue = yValue;
     }
 }
